@@ -7,8 +7,11 @@ const relays = [
   new gpio(21, 'out')
 ];
 
-// Turn off all relays.
-relays.forEach(relay => relay.writeSync(0));
+const allRelaysOff = () => {
+  relays.forEach(relay => relay.writeSync(0));
+};
+
+allRelaysOff();
 
 http.createServer((request, response) => {
   // Check request method is valid.
@@ -37,3 +40,9 @@ http.createServer((request, response) => {
   response.writeHead(404);
   response.end('Not found.');
 }).listen(8888);
+
+// Handle Ctrl+C exit cleanly 
+process.on('SIGINT', () => {
+  allRelaysOff();
+  process.exit();
+})
