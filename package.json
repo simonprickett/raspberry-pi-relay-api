@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/simonprickett/raspberry-pi-relay-api/issues"
   },
-  "homepage": "https://github.com/simonprickett/raspberry-pi-relay-api#readme"
+  "homepage": "https://github.com/simonprickett/raspberry-pi-relay-api#readme",
+  "dependencies": {
+    "onoff": "^5.0.1"
+  }
 }
