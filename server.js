@@ -29,6 +29,7 @@ http.createServer((request, response) => {
     );
 
     if (request.method === 'POST') {
+      // TODO process the post body for true or false.
       relays[relayNumber -1].writeSync(1);
     }     
 
