@@ -18,12 +18,6 @@ http.createServer((request, response) => {
     return;
   }
 
-  if (request.url === '/relays') {
-    response.writeHead(200);
-    response.end('All relays.');
-    return;
-  }
-
   if (['/relays/1', '/relays/2', '/relays/3'].includes(request.url)) {
     response.writeHead(200);
     const relayNumber = parseInt(
