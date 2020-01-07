@@ -32,18 +32,23 @@ http.createServer((request, response) => {
 
     if (['/relays/1', '/relays/2', '/relays/3'].includes(request.url)) {
       response.writeHead(200);
-      const relayNumber = parseInt(
+      let relayNumber = parseInt(
         request.url.substring(request.url.length - 1),
         10
       );
 
+      // Take 1 off of relayNumber as arrays are indexed.
+      relayNumber = relayNumber - 1;
+
       if (request.method === 'POST') {
         switch (requestBody.join('')) {
           case 'true':
-            relays[relayNumber - 1].writeSync(1);
+            relays[relayNumber].writeSync(1);
+            console.log(`Switched relay ${relayNumber} on.`);
             break;
           case 'false':
-            relays[relayNumber - 1].writeSync(0);
+            relays[relayNumber].writeSync(0);
+            console.log(`Switched relay ${relayNumber} off.`);
             break;
           default:
             response.writeHead(500);
@@ -53,7 +58,7 @@ http.createServer((request, response) => {
       }
 
       // Return true if the relay is on, otherwise false.
-      response.end(relays[relayNumber - 1].readSync() === 1 ? 'true' : 'false');
+      response.end(relays[relayNumber].readSync() === 1);
       return;
     }
 
