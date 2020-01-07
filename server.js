@@ -11,6 +11,8 @@ const allRelaysOff = () => {
   relays.forEach(relay => relay.writeSync(0));
 };
 
+
+// Turn off all relays on start up.
 allRelaysOff();
 
 http.createServer((request, response) => {
@@ -50,17 +52,18 @@ http.createServer((request, response) => {
         }
       }
 
+      // Return true if the relay is on, otherwise false.
       response.end(relays[relayNumber - 1].readSync() === 1 ? 'true' : 'false');
       return;
     }
 
-    // Unknown request.
+    // If we get to here, we have an unknown request.
     response.writeHead(404);
     response.end('Not found.');
   });
 }).listen(8888);
 
-// Handle Ctrl+C exit cleanly 
+// Handle Ctrl+C exit cleanly by turning off all relays.
 process.on('SIGINT', () => {
   allRelaysOff();
   process.exit();
