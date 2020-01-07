@@ -19,7 +19,7 @@ http.createServer((request, response) => {
   let requestBody = '';
 
   request.on('data', chunk => {
-    requestBody = `${requestBody}${chunk.toString}`;
+    requestBody = `${requestBody}${chunk.toString()}`;
   });
 
   request.on('end', () => {
@@ -42,33 +42,36 @@ http.createServer((request, response) => {
 
       if (request.method === 'POST') {
         // Parse the request body JSON.
-        const r = JSON.parse(requestBody);
+	try {
+          const r = JSON.parse(requestBody);
 
-        switch (r.state) {
-          case 'true':
+	  if (r.state === true) {
             relays[relayNumber].writeSync(1);
             console.log(`Switched relay ${relayNumber} on.`);
-            break;
-          case 'false':
+          } else if (r.state === false) {
             relays[relayNumber].writeSync(0);
             console.log(`Switched relay ${relayNumber} off.`);
-            break;
-          default:
+          } else {
             response.writeHead(500);
             response.end('Bad request.');
             return;
+          }
+        } catch(e) {
+	  response.writeHead(500);
+	  response.end('Bad request.');
+          return;
         }
       }
 
       // Return true if the relay is on, otherwise false.
       // TODO UPGRADE THIS TO A JSON RESPONSE WITH RELAY NUMBER AND STATE...
-      response.end(relays[relayNumber].readSync() === 1);
+      response.end(relays[relayNumber].readSync() === 1 ? 'true' : 'false');
       return;
+    } else {
+      // If we get to here, we have an unknown request.
+      response.writeHead(404);
+      response.end('Not found.');
     }
-
-    // If we get to here, we have an unknown request.
-    response.writeHead(404);
-    response.end('Not found.');
   });
 }).listen(8888);
 
