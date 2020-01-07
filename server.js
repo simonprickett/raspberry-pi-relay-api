@@ -39,10 +39,10 @@ http.createServer((request, response) => {
 
       if (request.method === 'POST') {
         switch (requestBody.join('')) {
-          case 'on':
+          case 'true':
             relays[relayNumber - 1].writeSync(1);
             break;
-          case 'off':
+          case 'false':
             relays[relayNumber - 1].writeSync(0);
             break;
           default:
