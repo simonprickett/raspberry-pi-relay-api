@@ -36,8 +36,18 @@ http.createServer((request, response) => {
       );
 
       if (request.method === 'POST') {
-        // TODO use the value in the post body...
-        relays[relayNumber - 1].writeSync(1);
+        switch (requestBody) {
+          case 'on':
+            relays[relayNumber - 1].writeSync(1);
+            break;
+          case 'off':
+            relays[relayNumber - 1].writeSync(0);
+            break;
+          default:
+            response.writeHead(500);
+            response.end('Bad request.');
+            return;
+        }
       }
 
       response.end(relays[relayNumber - 1].readSync() === 1 ? 'true' : 'false');
