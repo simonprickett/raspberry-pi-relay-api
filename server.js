@@ -14,6 +14,17 @@ const allRelaysOff = () => {
 allRelaysOff();
 
 http.createServer((request, response) => {
+  const requestBody = [];
+
+  request.on('data', chunk => {
+    requestBody.push(chunk);
+  });
+
+  request.on('end', () => {
+    // TODO move other logic in here...
+    console.log(`Request body received: ${requestBody}`)
+  });
+
   // Check request method is valid.
   if (! ['GET', 'POST'].includes(request.method)) {
     response.writeHead(500);
