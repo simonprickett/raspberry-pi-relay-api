@@ -36,7 +36,7 @@ http.createServer((request, response) => {
       );
 
       if (request.method === 'POST') {
-        switch (requestBody) {
+        switch (requestBody.join('')) {
           case 'on':
             relays[relayNumber - 1].writeSync(1);
             break;
