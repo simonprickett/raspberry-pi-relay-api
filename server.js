@@ -21,36 +21,33 @@ http.createServer((request, response) => {
   });
 
   request.on('end', () => {
-    // TODO move other logic in here...
-    console.log(`Request body received: ${requestBody}`)
+    // Check request method is valid.
+    if (!['GET', 'POST'].includes(request.method)) {
+      response.writeHead(500);
+      response.end('Bad request.');
+      return;
+    }
+
+    if (['/relays/1', '/relays/2', '/relays/3'].includes(request.url)) {
+      response.writeHead(200);
+      const relayNumber = parseInt(
+        request.url.substring(request.url.length - 1),
+        10
+      );
+
+      if (request.method === 'POST') {
+        // TODO use the value in the post body...
+        relays[relayNumber - 1].writeSync(1);
+      }
+
+      response.end(relays[relayNumber - 1].readSync() === 1 ? 'true' : 'false');
+      return;
+    }
+
+    // Unknown request.
+    response.writeHead(404);
+    response.end('Not found.');
   });
-
-  // Check request method is valid.
-  if (! ['GET', 'POST'].includes(request.method)) {
-    response.writeHead(500);
-    response.end('Bad request.');
-    return;
-  }
-
-  if (['/relays/1', '/relays/2', '/relays/3'].includes(request.url)) {
-    response.writeHead(200);
-    const relayNumber = parseInt(
-      request.url.substring(request.url.length - 1), 
-      10
-    );
-
-    if (request.method === 'POST') {
-      // TODO process the post body for true or false.
-      relays[relayNumber -1].writeSync(1);
-    }     
-
-    response.end(relays[relayNumber -1].readSync() === 1 ? 'true': 'false'); 
-    return;
-  }
-
-  // Unknown request.
-  response.writeHead(404);
-  response.end('Not found.');
 }).listen(8888);
 
 // Handle Ctrl+C exit cleanly 
