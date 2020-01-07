@@ -16,10 +16,10 @@ const allRelaysOff = () => {
 allRelaysOff();
 
 http.createServer((request, response) => {
-  const requestBody = [];
+  let requestBody = '';
 
   request.on('data', chunk => {
-    requestBody.push(chunk);
+    requestBody = `${requestBody}${chunk.toString}`;
   });
 
   request.on('end', () => {
@@ -41,7 +41,10 @@ http.createServer((request, response) => {
       relayNumber = relayNumber - 1;
 
       if (request.method === 'POST') {
-        switch (requestBody.join('')) {
+        // Parse the request body JSON.
+        const r = JSON.parse(requestBody);
+
+        switch (r.state) {
           case 'true':
             relays[relayNumber].writeSync(1);
             console.log(`Switched relay ${relayNumber} on.`);
@@ -58,6 +61,7 @@ http.createServer((request, response) => {
       }
 
       // Return true if the relay is on, otherwise false.
+      // TODO UPGRADE THIS TO A JSON RESPONSE WITH RELAY NUMBER AND STATE...
       response.end(relays[relayNumber].readSync() === 1);
       return;
     }
