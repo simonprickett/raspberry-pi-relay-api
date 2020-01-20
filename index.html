@@ -11,7 +11,7 @@
   <h1>Raspberry Pi Relay Example with Node.js</h1>
   <h2>Relay States</h2>
   <div id="relayStates">
-    <!-- Relay states will appear here... -->
+    <p>Initializing...</p>
   </div>
   <h2>Relay Controls</h2>
   <table>
@@ -32,10 +32,11 @@
   <script>
     const getRelayState = async relayNumber => {
       const response = await fetch('/relays/1');
-      return await response.text();
+      const responseText = await response.text();
+      return response.text === 'true' ? 'on' : 'off';
     };
 
-    const updateRelayStates = async () => {
+    const getRelayStates = async () => {
       const [relay1Status, relay2Status, relay3Status] = await Promise.all([
         await getRelayState(1),
         await getRelayState(2),
@@ -54,7 +55,7 @@
 
     window.onload = () => {
       setInterval(() => {
-        updateRelayStates();
+        getRelayStates();
       }, 2000);
     };
   </script>
