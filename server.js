@@ -11,7 +11,6 @@ const allRelaysOff = () => {
   relays.forEach(relay => relay.writeSync(0));
 };
 
-
 // Turn off all relays on start up.
 allRelaysOff();
 
@@ -30,6 +29,15 @@ http.createServer((request, response) => {
       return;
     }
 
+    if (request.url === '/') {
+      fs.readFile('index.html', (error, content) => {
+        response.writeHead(200, { 'Content-Type': 'text/html' });
+        response.end(content, 'utf-8');
+      });
+
+      return;
+    }
+
     if (['/relays/1', '/relays/2', '/relays/3'].includes(request.url)) {
       response.writeHead(200);
       let relayNumber = parseInt(
@@ -42,10 +50,10 @@ http.createServer((request, response) => {
 
       if (request.method === 'POST') {
         // Parse the request body JSON.
-	try {
+        try {
           const r = JSON.parse(requestBody);
 
-	  if (r.state === true) {
+          if (r.state === true) {
             relays[relayNumber].writeSync(1);
             console.log(`Switched relay ${relayNumber} on.`);
           } else if (r.state === false) {
@@ -56,15 +64,14 @@ http.createServer((request, response) => {
             response.end('Bad request.');
             return;
           }
-        } catch(e) {
-	  response.writeHead(500);
-	  response.end('Bad request.');
+        } catch (e) {
+          response.writeHead(500);
+          response.end('Bad request.');
           return;
         }
       }
 
       // Return true if the relay is on, otherwise false.
-      // TODO UPGRADE THIS TO A JSON RESPONSE WITH RELAY NUMBER AND STATE...
       response.end(relays[relayNumber].readSync() === 1 ? 'true' : 'false');
       return;
     } else {
