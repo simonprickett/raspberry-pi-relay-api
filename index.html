@@ -65,13 +65,13 @@
 
     const initializeButtons = () => {
       const buttons = document.getElementsByTagName('button');
-  
+
       for (const button of buttons) {
         button.addEventListener('click', function (e) {
           const buttonIdParts = button.getAttribute('id').split('-');
           const relayNumber = buttonIdParts[0];
-	  const relayState = (buttonIdParts[1] === 'true');
-          setRelayState(relayNumber, relayState); 
+          const relayState = (buttonIdParts[1] === 'true');
+          setRelayState(relayNumber, relayState);
         });
       }
     };
