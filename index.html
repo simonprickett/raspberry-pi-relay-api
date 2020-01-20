@@ -8,8 +8,56 @@
 </head>
 
 <body>
-  <h1>Raspberry Pi Relat Example with Node.js</h1>
-  <p>TODO Content!</p>
+  <h1>Raspberry Pi Relay Example with Node.js</h1>
+  <h2>Relay States</h2>
+  <div id="relayStates">
+    <!-- Relay states will appear here... -->
+  </div>
+  <h2>Relay Controls</h2>
+  <table>
+    <tr>
+      <td>Relay 1</td>
+      <td><button id="relay-1-true">On</button><button id="relay-1-false">Off</button>
+    </tr>
+    <tr>
+      <td>Relay 2</td>
+      <td><button id="relay-2-true">On</button><button id="relay-2-false">Off</button>
+    </tr>
+    <tr>
+      <td>Relay 3</td>
+      <td><button id="relay-3-true">On</button><button id="relay-3-false">Off</button>
+    </tr>
+  </table>
+
+  <script>
+    const getRelayState = async relayNumber => {
+      const response = await fetch('/relays/1');
+      return await response.text();
+    };
+
+    const updateRelayStates = async () => {
+      const [relay1Status, relay2Status, relay3Status] = await Promise.all([
+        await getRelayState(1),
+        await getRelayState(2),
+        await getRelayState(3)
+      ]);
+
+      const statusHTML = `
+        <ul>
+          <li>Relay 1 (red): ${relay1Status}</li>
+          <li>Relay 2 (blue): ${relay2Status}</li>
+          <li>Relay 3 (green): ${relay3Status}</li>
+       </ul>`;
+
+      document.getElementById('relayStates').innerHTML = statusHTML;
+    };
+
+    window.onload = () => {
+      setInterval(() => {
+        updateRelayStates();
+      }, 2000);
+    };
+  </script>
 </body>
 
 </html>

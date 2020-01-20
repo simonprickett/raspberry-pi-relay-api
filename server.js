@@ -1,3 +1,4 @@
+const fs = require('fs');
 const http = require('http');
 const gpio = require('onoff').Gpio;
 
@@ -30,6 +31,7 @@ http.createServer((request, response) => {
     }
 
     if (request.url === '/') {
+      console.log('Home page requested.');
       fs.readFile('index.html', (error, content) => {
         response.writeHead(200, { 'Content-Type': 'text/html' });
         response.end(content, 'utf-8');
