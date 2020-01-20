@@ -48,9 +48,9 @@
 
     const getRelayStates = async () => {
       const [relay1Status, relay2Status, relay3Status] = await Promise.all([
-        await getRelayState(1),
-        await getRelayState(2),
-        await getRelayState(3)
+        getRelayState(1),
+        getRelayState(2),
+        getRelayState(3)
       ]);
 
       const statusHTML = `
