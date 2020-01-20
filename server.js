@@ -12,10 +12,7 @@ const allRelaysOff = () => {
   relays.forEach(relay => relay.writeSync(0));
 };
 
-// Turn off all relays on start up.
-allRelaysOff();
-
-http.createServer((request, response) => {
+const relayServer = (request, response) => {
   let requestBody = '';
 
   request.on('data', chunk => {
@@ -82,7 +79,13 @@ http.createServer((request, response) => {
       response.end('Not found.');
     }
   });
-}).listen(8888);
+};
+
+// Turn off all relays on start up.
+allRelaysOff();
+
+// Create a web server and listen on 8888.
+http.createServer(relayServer).listen(8888);
 
 // Handle Ctrl+C exit cleanly by turning off all relays.
 process.on('SIGINT', () => {
