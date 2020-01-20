@@ -16,24 +16,34 @@
   <h2>Relay Controls</h2>
   <table>
     <tr>
-      <td>Relay 1</td>
-      <td><button id="relay-1-true">On</button><button id="relay-1-false">Off</button>
+      <td>Relay 1 (red)</td>
+      <td><button id="1-true">On</button><button id="1-false">Off</button>
     </tr>
     <tr>
-      <td>Relay 2</td>
-      <td><button id="relay-2-true">On</button><button id="relay-2-false">Off</button>
+      <td>Relay 2 (purple)</td>
+      <td><button id="2-true">On</button><button id="2-false">Off</button>
     </tr>
     <tr>
-      <td>Relay 3</td>
-      <td><button id="relay-3-true">On</button><button id="relay-3-false">Off</button>
+      <td>Relay 3 (green)</td>
+      <td><button id="3-true">On</button><button id="3-false">Off</button>
     </tr>
   </table>
 
   <script>
     const getRelayState = async relayNumber => {
-      const response = await fetch('/relays/1');
+      const response = await fetch(`/relays/${relayNumber}`);
       const responseText = await response.text();
-      return response.text === 'true' ? 'on' : 'off';
+      return responseText === 'true' ? 'on' : 'off';
+    };
+
+    const setRelayState = async (relayNumber, newState) => {
+      fetch(`/relays/${relayNumber}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ state: newState })
+      });
     };
 
     const getRelayStates = async () => {
@@ -46,7 +56,7 @@
       const statusHTML = `
         <ul>
           <li>Relay 1 (red): ${relay1Status}</li>
-          <li>Relay 2 (blue): ${relay2Status}</li>
+          <li>Relay 2 (purple): ${relay2Status}</li>
           <li>Relay 3 (green): ${relay3Status}</li>
        </ul>`;
 
@@ -58,17 +68,17 @@
   
       for (const button of buttons) {
         button.addEventListener('click', function (e) {
-          alert(`clicked ${button.getAttribute('id')}`);
+          const buttonIdParts = button.getAttribute('id').split('-');
+          const relayNumber = buttonIdParts[0];
+	  const relayState = (buttonIdParts[1] === 'true');
+          setRelayState(relayNumber, relayState); 
         });
       }
     };
 
     window.onload = () => {
+      setInterval(getRelayStates, 1000);
       initializeButtons();
-
-      setInterval(() => {
-        getRelayStates();
-      }, 2000);
     };
   </script>
 </body>
