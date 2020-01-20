@@ -53,7 +53,19 @@
       document.getElementById('relayStates').innerHTML = statusHTML;
     };
 
+    const initializeButtons = () => {
+      const buttons = document.getElementsByTagName('button');
+  
+      for (const button of buttons) {
+        button.addEventListener('click', function (e) {
+          alert(`clicked ${button.getAttribute('id')}`);
+        });
+      }
+    };
+
     window.onload = () => {
+      initializeButtons();
+
       setInterval(() => {
         getRelayStates();
       }, 2000);
