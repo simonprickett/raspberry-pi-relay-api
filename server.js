@@ -91,4 +91,4 @@ http.createServer(relayServer).listen(8888);
 process.on('SIGINT', () => {
   allRelaysOff();
   process.exit();
-})
+});
