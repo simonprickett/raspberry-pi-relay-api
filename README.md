@@ -8,6 +8,8 @@ There is a simple HTML front end that allows the user to see and change the stat
 
 This project was put together for the San Diego JS Fundamental JS Meetup group in January 2020.  Fundamental JS aims to explore vanilla JavaScript with minimal use of frameworks, so this project doesn't use any Node or front end frameworks apart from the npm package used to control the relays via the Pi's GPIO ports.
 
+[Read the full blog post with video on my website!](https://simonprickett.dev/controlling-real-world-objects-with-raspberry-pi-and-node-js/)
+
 Hardware used for this:
 
 * Raspberry Pi 3 (any model with 40 pin GPIO header works).
